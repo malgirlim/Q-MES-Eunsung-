@@ -1,4 +1,4 @@
-# Q MES
+# Q MES (EunSung Printers)
 
 ## Vue 3 + TypeScript + Vite
 
