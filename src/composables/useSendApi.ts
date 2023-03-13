@@ -3,12 +3,13 @@ import axios from "axios";
 import { usePagination } from "../components/Pagination/useClientSidePagination";
 
 export function useSendApi<T>(
-  url: string,
-  currentPage: Ref<number>,
-  rowsPerPage?: Ref<number>
+  url: string, // api 보낼 주소
+  currentPage: Ref<number>, // 현재페이지
+  rowsPerPage?: Ref<number> // 한 페이지에 나타낼 데이터 갯수
 ) {
-  const datas: Ref<T[]> = ref([]); // 인터페이스 T 형식에 맞는 데이터를 가져올 공간 BUT, 페이징갯수에 맞는 데이터만 등록됨
-  const dataAll: Ref<T[]> = ref([]); // 인터페이스 T 형식에 맞는 데이터를 가져올 공간 모든 데이터 등록됨
+  const datas: Ref<T[]> = ref([]); // 인터페이스 T 형식에 맞는 모든 데이터를 가져오지만 페이징으로 인해 나눠짐
+  const dataAll: Ref<T[]> = ref([]); // 인터페이스 T 형식에 맞는 모든 데이터 등록
+  const dataSearchAll: Ref<T[]> = ref([]); // 인터페이스 T 형식에 맞는 조회조건 데이터 등록
   const datasAreLoading = ref(false); // 데이터를 가져오면서 로딩하고 있는지 확인하는 변수
   const dataCount = ref(0); // 가져온 데이터의 갯수
 
@@ -19,6 +20,7 @@ export function useSendApi<T>(
       await axios.get(url).then((res) => {
         datas.value = res.data;
         dataAll.value = res.data;
+        dataSearchAll.value = res.data;
         dataCount.value = datas.value.length;
       });
     } catch (err) {
@@ -34,6 +36,7 @@ export function useSendApi<T>(
     try {
       await axios.post(url, { date, key, input }).then((res) => {
         datas.value = res.data;
+        dataSearchAll.value = res.data;
         dataCount.value = datas.value.length;
       });
     } catch (err) {
@@ -88,6 +91,7 @@ export function useSendApi<T>(
 
   return {
     dataAll,
+    dataSearchAll,
     datas: paginatedArray,
     dataCount,
     datasAreLoading,
