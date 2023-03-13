@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
 
 import SideMenu from "../layouts/SideMenu/SideMenu.vue";
 import SimpleMenu from "../layouts/SimpleMenu/SimpleMenu.vue";
@@ -57,6 +55,7 @@ import StockWIPRaw from "../pages/stock/StockWIPRaw.vue";
 import StockWIPHalf from "../pages/stock/StockWIPHalf.vue";
 import StockReceiveFinish from "../pages/stock/StockReceiveFinish.vue";
 import StockUseFinish from "../pages/stock/StockUseFinish.vue";
+import Card from "../components/Common/Main/KPICard.vue";
 
 import axios from "axios";
 
@@ -68,6 +67,7 @@ const routes = [
   {
     path: "/",
     component: TopMenu,
+
     children: [
       {
         path: "/",

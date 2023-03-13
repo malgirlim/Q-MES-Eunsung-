@@ -7,6 +7,7 @@ const memoRouter = require("./router/memos");
 const authRouter = require("./router/auth");
 
 const masterRouter = require("./router/masterRouter");
+const orderRouter = require("./router/orderRouter");
 const stockRouter = require("./router/stockRouter");
 const monitorRouter = require("./router/monitorRouter");
 
@@ -31,10 +32,13 @@ app.use("/api/auth", authRouter);
 // 기준정보 - router/master/masterRouter.js
 app.use("/api/master", masterRouter);
 
+// 주문관리 - router/order/orderRouter.js
+app.use("/api/order", orderRouter);
+
 // 재고관리 - router/stock/stockRouter.js
 app.use("/api/stock", stockRouter);
 
-// 재고조회 - router/monitor/monitorRouter.js
+// 모니터링 - router/monitor/monitorRouter.js
 app.use("/api/monitor", monitorRouter);
 
 app.listen(port, () => {

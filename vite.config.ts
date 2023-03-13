@@ -30,7 +30,7 @@ export default defineConfig({
   // 백엔드와 연결
   server: {
     proxy: {
-      "/api": "http://192.168.0.17:3000",
+      "/api": "http://192.168.0.8:3000",
     },
   },
 });

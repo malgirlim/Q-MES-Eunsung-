@@ -21,7 +21,7 @@ const data = computed<ChartData>(() => {
     labels: ["1월", "2월", "3월"],
     datasets: [
       {
-        label: "설비1",
+        label: "인쇄기1",
         data: [86, 75, 95],
         borderWidth: 2,
         borderColor: colorScheme.value ? getColor("primary") : "",
@@ -30,7 +30,7 @@ const data = computed<ChartData>(() => {
         tension: 0.4,
       },
       {
-        label: "설비2",
+        label: "인쇄기2",
         data: [75, 90, 83],
         borderWidth: 2,
         borderColor: colorScheme.value ? getColor("success") : "",
@@ -39,7 +39,7 @@ const data = computed<ChartData>(() => {
         tension: 0.4,
       },
       {
-        label: "설비3",
+        label: "인쇄기3",
         data: [83, 85, 95],
         borderWidth: 2,
         borderColor: colorScheme.value ? getColor("warning") : "",
@@ -48,7 +48,7 @@ const data = computed<ChartData>(() => {
         tension: 0.4,
       },
       {
-        label: "설비4",
+        label: "인쇄기4",
         data: [70, 80, 90],
         borderWidth: 2,
         borderColor: colorScheme.value ? getColor("danger") : "",
@@ -57,7 +57,7 @@ const data = computed<ChartData>(() => {
         tension: 0.4,
       },
       {
-        label: "설비5",
+        label: "인쇄기5",
         data: [90, 87, 80],
         borderWidth: 2,
         borderColor: colorScheme.value ? getColor("dark") : "",
@@ -83,7 +83,7 @@ const options = computed<ChartOptions>(() => {
       x: {
         title: {
           font: {
-            family:"굴림",
+            family: "굴림",
             size: 13,
           },
           color: "black",
@@ -104,7 +104,7 @@ const options = computed<ChartOptions>(() => {
       y: {
         title: {
           font: {
-            family:"굴림",
+            family: "굴림",
             size: 13,
           },
           color: "black",

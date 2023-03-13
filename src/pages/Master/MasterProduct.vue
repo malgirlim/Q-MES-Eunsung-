@@ -30,7 +30,7 @@ const pageChange = () => {
 };
 
 // api 보내기
-const url = "";
+const url = "/api/master/product";
 const {
   datas,
   dataAll,

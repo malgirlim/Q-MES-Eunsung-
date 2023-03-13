@@ -13,6 +13,9 @@ import * as XLSX from "xlsx";
 import { read, utils, writeFileXLSX } from "xlsx";
 import printJS from "print-js";
 
+//컴포넌트
+import OrderDoc from "../../components/Common/Order/OrderDoc.vue";
+
 // API 보내는 함수 및 인터페이스 불러오기
 import { useSendApi } from "../../composables/useSendApi";
 import { StockUse } from "../../interfaces/menu/stockInterface";
@@ -21,6 +24,7 @@ import { MasterProduct } from "../../interfaces/menu/MasterInterface";
 // 페이징기능
 import { onMounted, watch } from "vue";
 import PaginationComponent from "../../components/Pagination/PaginationComponent.vue"; // 페이징설정
+import { html } from "js-beautify";
 const currentPage = ref(1); // 현재페이지
 const rowsPerPage = ref(10); // 한 페이지에 보여질 데이터 갯수
 
@@ -30,7 +34,7 @@ const pageChange = () => {
 };
 
 // api 보내기
-const url = "";
+const url = "/api/master/product";
 const {
   datas,
   dataAll,
@@ -155,10 +159,26 @@ const printPage = (data: any) => {
   });
 };
 
+const printOrderDoc = (data: any) => {
+  printJS({
+    printable: data,
+    type: "html",
+    documentTitle: "수주서",
+    targetStyles: ["*"],
+    font_size: "9pt",
+  });
+};
+
 // Print.js  Modal
 const printModal = ref(false);
 const setPrintModal = (value: boolean) => {
   printModal.value = value;
+};
+
+// 수주서 확인  Modal
+const orderModal = ref(false);
+const setOrderModal = (value: boolean) => {
+  orderModal.value = value;
 };
 
 // ########################## 엑셀 다운로드 및 업로드 ##########################
@@ -293,6 +313,14 @@ const table_width = [
   "width: 50px",
   "width: 50px",
 ];
+
+const noti = (data: string) => {
+  Notification.requestPermission();
+  new Notification("설비 알림", {
+    body: data,
+    image: "../assets/image/logo.png",
+  });
+};
 </script>
 
 <template>
@@ -326,7 +354,15 @@ const table_width = [
           }
         "
       >
-        <Lucide icon="Trash2" class="w-4 h-4 mr-2" /> 삭제</Button
+        <Lucide icon="Trash2" class="w-4 h-4 mr-2" />삭제</Button
+      >
+      <Button
+        class="mr-2 shadow-md"
+        as="a"
+        variant="outline-success"
+        @click="noti('알림데이터발송')"
+      >
+        <Lucide icon="Bell" class="w-4 h-4 mr-2" />테스트</Button
       >
       <div class="hidden mx-auto md:block text-slate-500"></div>
       <div class="mr-5">
@@ -514,7 +550,7 @@ const table_width = [
                 class="text-center border-b-0 whitespace-nowrap"
                 :style="table_width[2]"
               >
-                항목1
+                수주코드
               </Table.Th>
               <Table.Th
                 class="text-center border-b-0 whitespace-nowrap"
@@ -601,7 +637,14 @@ const table_width = [
                 class="first:rounded-l-md last:rounded-r-md w-10 text-center bg-white border-b-0 dark:bg-darkmode-600 shadow-[20px_3px_20px_#0000000b]"
                 :style="table_width[2]"
               >
-                <div>예시데이터1</div>
+                <div>
+                  <label
+                    class="text-blue-500"
+                    style="cursor: pointer"
+                    @click="setOrderModal(true)"
+                    >예시데이터1</label
+                  >
+                </div>
               </Table.Td>
               <Table.Td
                 class="first:rounded-l-md last:rounded-r-md w-10 text-center bg-white border-b-0 dark:bg-darkmode-600 shadow-[20px_3px_20px_#0000000b]"
@@ -1073,4 +1116,35 @@ const table_width = [
     </Dialog.Panel>
   </Dialog>
   <!-- END: 프린트 출력 Modal -->
+  <!-- BEGIN: 수주서 확인 Modal -->
+  <Dialog size="xl" :open="orderModal" @close="setOrderModal(false)">
+    <Dialog.Panel>
+      <OrderDoc />
+      <div class="px-5 pb-8 text-center">
+        <Button
+          variant="primary"
+          type="button"
+          class="w-38 mr-3"
+          @click="
+            () => {
+              printOrderDoc('OrderDoc');
+              setOrderModal(false);
+            }
+          "
+        >
+          출력(print.js)
+        </Button>
+        <Button
+          variant="outline-primary"
+          type="button"
+          @click="setOrderModal(false)"
+          class="w-38"
+        >
+          닫기
+        </Button>
+      </div>
+    </Dialog.Panel>
+  </Dialog>
+  <!-- END: 수주서 확인 Modal -->
 </template>
+<style type="text/css"></style>

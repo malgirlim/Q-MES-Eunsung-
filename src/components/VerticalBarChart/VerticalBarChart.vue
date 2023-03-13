@@ -19,7 +19,7 @@ const data = computed<ChartData>(() => {
     labels: ["1월", "2월", "3월"],
     datasets: [
       {
-        label: "설비1",
+        label: "인쇄기1",
         barPercentage: 0.5,
         barThickness: 20,
         maxBarThickness: 20,
@@ -28,7 +28,7 @@ const data = computed<ChartData>(() => {
         backgroundColor: colorScheme.value ? getColor("primary") : "",
       },
       {
-        label: "설비2",
+        label: "인쇄기2",
         barPercentage: 0.5,
         barThickness: 20,
         maxBarThickness: 20,
@@ -37,7 +37,7 @@ const data = computed<ChartData>(() => {
         backgroundColor: colorScheme.value ? getColor("success") : "",
       },
       {
-        label: "설비3",
+        label: "인쇄기3",
         barPercentage: 0.5,
         barThickness: 20,
         maxBarThickness: 20,
@@ -46,7 +46,7 @@ const data = computed<ChartData>(() => {
         backgroundColor: colorScheme.value ? getColor("warning") : "",
       },
       {
-        label: "설비4",
+        label: "인쇄기4",
         barPercentage: 0.5,
         barThickness: 20,
         maxBarThickness: 20,
@@ -55,7 +55,7 @@ const data = computed<ChartData>(() => {
         backgroundColor: colorScheme.value ? getColor("danger") : "",
       },
       {
-        label: "설비5",
+        label: "인쇄기5",
         barPercentage: 0.5,
         barThickness: 20,
         maxBarThickness: 20,
@@ -63,9 +63,9 @@ const data = computed<ChartData>(() => {
         data: [50, 30, 60],
         backgroundColor: colorScheme.value ? getColor("dark") : "",
         datalabels: {
-        align: 'end',
-        anchor: 'start'
-      }
+          align: "end",
+          anchor: "start",
+        },
       },
     ],
   };
@@ -85,7 +85,7 @@ const options = computed<ChartOptions>(() => {
       x: {
         title: {
           font: {
-            family:"굴림",
+            family: "굴림",
             size: 13,
           },
           color: "black",
@@ -106,7 +106,7 @@ const options = computed<ChartOptions>(() => {
       y: {
         title: {
           font: {
-            family:"굴림",
+            family: "굴림",
             size: 13,
           },
           color: "black",

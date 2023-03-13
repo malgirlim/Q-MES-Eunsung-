@@ -16,6 +16,7 @@ import RunningCard from "../components/Common/Main/RunningCard.vue";
 import DisabledRunningCard from "../components/Common/Main/DisabledRunningCard.vue";
 import KPICard from "../components/Common/Main/KPICard.vue";
 import DisabledKPICard from "../components/Common/Main/DisabledKPICard.vue";
+import router from "../router";
 
 onMounted(async () => {
   setInterval(() => {
@@ -23,7 +24,6 @@ onMounted(async () => {
   }, 1000);
   setInterval(() => {
     switch_page_func();
-    console.log(switch_page.value);
   }, 5000);
 });
 
@@ -60,7 +60,7 @@ const switch_page_func = () => {
         as="a"
         variant="primary"
         @click="switch_page_func()"
-        ><Lucide icon="ArrowLeftRight" class="w-4 h-4" />
+        ><Lucide icon="ArrowLeftRight" class="w-4 h-4 mr-2" />표시전환
       </Button>
     </div>
     <!--BEGIN : 첫번째 표시-->
@@ -68,12 +68,36 @@ const switch_page_func = () => {
       v-if="switch_page == 'first'"
       class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-6 mt-3"
     >
-      <RunningCard name="설비1" :run="true" />
-      <RunningCard name="설비2" :run="true" />
-      <RunningCard name="설비3" :run="true" />
-      <RunningCard name="설비4" :run="true" />
-      <RunningCard name="설비5" :run="false" />
-      <RunningCard name="설비6" :run="false" />
+      <RunningCard
+        @click="$router.push('process/checker')"
+        name="검사기"
+        :run="true"
+      />
+      <RunningCard
+        @click="$router.push('process/plate')"
+        name="제판기"
+        :run="true"
+      />
+      <RunningCard
+        @click="$router.push('process/printer1')"
+        name="인쇄기1"
+        :run="true"
+      />
+      <RunningCard
+        @click="$router.push('process/printer2')"
+        name="인쇄기2"
+        :run="true"
+      />
+      <RunningCard
+        @click="$router.push('process/printer3')"
+        name="인쇄기3"
+        :run="false"
+      />
+      <RunningCard
+        @click="$router.push('process/printer4')"
+        name="인쇄기4"
+        :run="false"
+      />
     </div>
     <!--END : 첫번째 표시-->
     <!--BEGIN : 두번째 표시-->
@@ -81,10 +105,26 @@ const switch_page_func = () => {
       v-if="switch_page == 'second'"
       class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-6 mt-3"
     >
-      <RunningCard name="설비7" :run="false" />
-      <RunningCard name="설비8" :run="false" />
-      <DisabledRunningCard />
-      <DisabledRunningCard />
+      <RunningCard
+        @click="$router.push('process/printer5')"
+        name="인쇄기5"
+        :run="false"
+      />
+      <RunningCard
+        @click="$router.push('process/printer6')"
+        name="인쇄기6"
+        :run="false"
+      />
+      <RunningCard
+        @click="$router.push('process/printer7')"
+        name="인쇄기7"
+        :run="false"
+      />
+      <RunningCard
+        @click="$router.push('process/printer8')"
+        name="인쇄기8"
+        :run="false"
+      />
       <DisabledRunningCard />
       <DisabledRunningCard />
     </div>
@@ -93,8 +133,18 @@ const switch_page_func = () => {
     <div
       class="mt-7 grid grid-cols-2 sm:grid-cols-6 xl:grid-cols-12 gap-6 mt-5"
     >
-      <KPICard data="2%" name="설비가동률" name2="향상률" />
-      <KPICard data="5%" name="재고비용" name2="절감률" />
+      <KPICard
+        @click="$router.push('monitoring/kpi')"
+        data="2%"
+        name="설비가동률"
+        name2="향상률"
+      />
+      <KPICard
+        @click="$router.push('monitoring/kpi')"
+        data="5%"
+        name="재고비용"
+        name2="절감률"
+      />
       <DisabledKPICard />
       <DisabledKPICard />
     </div>

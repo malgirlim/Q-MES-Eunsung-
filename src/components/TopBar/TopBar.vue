@@ -18,15 +18,52 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { getCurrentInstance, ref, watch } from "vue";
 import Lucide from "../../base-components/Lucide";
-import logoUrl from "../../assets/images/logo.svg";
+import logoUrl from "../../assets/images/logo.png";
 import Breadcrumb from "../../base-components/Breadcrumb";
+import Button from "../../base-components/Button";
 import { FormInput } from "../../base-components/Form";
-import { Menu, Popover } from "../../base-components/Headless";
+import { Menu, Popover, Dialog } from "../../base-components/Headless";
 import fakerData from "../../utils/faker";
 import _ from "lodash";
 import { TransitionRoot } from "@headlessui/vue";
+import { toast } from "vue3-toastify";
+
+/*로그인 관련 BEGIN*/
+import axios from "axios";
+import router from "../../router";
+
+const { proxy }: any = getCurrentInstance();
+
+const logout = () => {
+  axios.delete("/api/auth").then(() => {
+    toast.info("정상 로그아웃 하였습니다.");
+    proxy.gstate.account.id = null;
+    proxy.gstate.account.name = "";
+    proxy.gstate.account.rank = "";
+    router.push("/login");
+  });
+};
+
+axios
+  .get("/api/auth")
+  .then((res: any) => {
+    proxy.gstate.account = res.data;
+  })
+  .catch(() => {
+    if (proxy.gstate.account.id == null) {
+      router.push("/login");
+    }
+  });
+
+/*로그인 관련 END*/
+
+/* 로그아웃 확인 Modal */
+const logoutModal = ref(false);
+const setLogoutModal = (value: boolean) => {
+  logoutModal.value = value;
+};
 
 const props = defineProps<{
   layout?: "side-menu" | "simple-menu" | "top-menu";
@@ -95,8 +132,12 @@ const hideSearchDropdown = () => {
           {{ $route.meta.pagename }}
         </Breadcrumb.Link>
       </Breadcrumb>
-      <!-- END: Breadcrumb -->
 
+      <!-- END: Breadcrumb -->
+      <div class="relative mr-3 intro-x sm:mr-6 text-white">
+        {{ proxy.gstate.account.name }}
+        {{ proxy.gstate.account.rank }} ({{ proxy.gstate.account.part }})
+      </div>
       <!-- BEGIN: Search
       <div class="relative mr-3 intro-x sm:mr-6">
         <div class="relative hidden sm:block">
@@ -249,22 +290,23 @@ const hideSearchDropdown = () => {
       </Popover>
       END: Notifications -->
       <!-- BEGIN: Account Menu -->
+
       <Menu>
         <Menu.Button
           class="block w-8 h-8 overflow-hidden rounded-full shadow-lg image-fit zoom-in intro-x"
         >
           <img
             alt="Midone Tailwind HTML Admin Template"
-            :src="fakerData[9].photos[0]"
+            src="../../assets/images/user.png"
           />
         </Menu.Button>
         <Menu.Items
-          class="w-56 mt-px relative bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white"
+          class="w-56 mt-px relative bg-success/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white"
         >
           <Menu.Header class="font-normal">
-            <div class="font-medium">{{ fakerData[0].users[0].name }}</div>
+            <div class="font-medium">{{ proxy.gstate.account.name }}</div>
             <div class="text-xs text-white/70 mt-0.5 dark:text-slate-500">
-              {{ fakerData[0].jobs[0] }}
+              {{ proxy.gstate.account.part }} / {{ proxy.gstate.account.rank }}
             </div>
           </Menu.Header>
           <Menu.Devider class="bg-white/[0.08]" />
@@ -279,7 +321,7 @@ const hideSearchDropdown = () => {
             <Lucide icon="HelpCircle" class="w-4 h-4 mr-2" /> 도움말
           </Menu.Item>
           <Menu.Devider class="bg-white/[0.08]" />
-          <Menu.Item class="hover:bg-white/5">
+          <Menu.Item class="hover:bg-white/5" @click="setLogoutModal(true)">
             <Lucide icon="ToggleRight" class="w-4 h-4 mr-2" /> 로그아웃
           </Menu.Item>
         </Menu.Items>
@@ -287,4 +329,40 @@ const hideSearchDropdown = () => {
       <!-- END: Account Menu -->
     </div>
   </div>
+
+  <!-- BEGIN: 로그아웃 확인 Modal -->
+  <Dialog :open="logoutModal" @close="setLogoutModal(false)">
+    <Dialog.Panel>
+      <div class="p-5 text-center">
+        <Lucide icon="LogOut" class="w-16 h-16 mx-auto mt-3 text-danger" />
+        <div class="mt-5 text-xl">로그아웃 하시겠습니까?</div>
+      </div>
+
+      <div class="px-5 pb-8 text-center">
+        <Button
+          variant="outline-secondary"
+          type="button"
+          class="w-24 mr-3"
+          @click="setLogoutModal(false)"
+        >
+          취소
+        </Button>
+
+        <Button
+          variant="danger"
+          type="button"
+          @click="
+            () => {
+              setLogoutModal(false);
+              logout();
+            }
+          "
+          class="w-24 mr-1"
+        >
+          확인
+        </Button>
+      </div>
+    </Dialog.Panel>
+  </Dialog>
+  <!-- END: 로그아웃 확인 Modal -->
 </template>

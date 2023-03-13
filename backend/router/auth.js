@@ -1,14 +1,10 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-// const database = require("./database");
-const { sql, pool } = require("../mssql");
-
-const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
-
 const router = express.Router();
-router.use(bodyParser.json());
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
+router.use(bodyParser.json());
 router.use(cookieParser());
 
 router.use((req, res, next) => {
@@ -16,45 +12,31 @@ router.use((req, res, next) => {
   next();
 });
 
-// 로그인 되는지 확인하고 토큰 보내기
-router.post("/login", async (req, res) => {
-  try {
-    const Pool = await pool;
-    // select
-    const result = await Pool.request()
-      .input("id", sql.NVarChar, req.body.login_id)
-      .input("pw", sql.NVarChar, req.body.login_pw)
-      .query(
-        "SELECT [USER_ID] AS id, [USER_PW] AS pw, [USER_NAME] AS name FROM [QINNOTEK].[dbo].[MASTER_USER_TB] WHERE [USER_ID] = @id AND [USER_PW] = @pw"
-      );
+const jwtKey = "abc1234567";
 
-    if (result.recordset.length == 0) {
-      res.status(404);
-      res.send("로그인 정보가 일치하지 않습니다.");
-    } else {
-      const token = jwt.sign(
-        {
-          id: result.recordset[0].id,
-          pw: result.recordset[0].pw,
-          name: result.recordset[0].name,
-        },
-        "토큰에대한비밀키입니다",
-        { expiresIn: "24h", issuer: "africalib" }
-      );
-      res.send({ token: token, data: result.recordset[0] });
-    }
-  } catch (err) {
-    res.status(500);
-    res.send(err.message);
-  }
-});
+const members = [
+  {
+    id: 1,
+    name: "황병구",
+    part: "품질개발부",
+    rank: "부장",
+    loginId: "admin",
+    loginPw: "1234",
+  },
+  {
+    id: 2,
+    name: "홍길동",
+    part: "영업팀",
+    rank: "사원",
+    loginId: "a",
+    loginPw: "1",
+  },
+];
 
-// 토큰 체크하기
-router.post("/accessTokenCheck", async (req, res) => {
+router.get("/", (req, res) => {
   if (req.cookies && req.cookies.token) {
-    jwt.verify(req.cookies.token, "토큰에대한비밀키입니다", (err, decoded) => {
+    jwt.verify(req.cookies.token, jwtKey, (err, decoded) => {
       if (err) {
-        console.log(err);
         return res.sendStatus(401);
       }
       res.send(decoded);
@@ -62,6 +44,49 @@ router.post("/accessTokenCheck", async (req, res) => {
   } else {
     res.sendStatus(401);
   }
+});
+
+router.post("/", (req, res) => {
+  const loginId = req.body.loginId;
+  const loginPw = req.body.loginPw;
+
+  const member = members.find(
+    (m) => m.loginId === loginId && m.loginPw === loginPw
+  );
+
+  if (member) {
+    const options = {
+      domain: "localhost",
+      path: "/",
+      httpOnly: true,
+    };
+
+    const token = jwt.sign(
+      {
+        id: member.id,
+        name: member.name,
+        part: member.part,
+        rank: member.rank,
+      },
+      jwtKey,
+      {
+        expiresIn: "24h",
+        issuer: "malgirlim",
+      }
+    );
+
+    res.cookie("token", token, options);
+    res.send(member);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+router.delete("/", (req, res) => {
+  if (req.cookies && req.cookies.token) {
+    res.clearCookie("token");
+  }
+  res.sendStatus(200);
 });
 
 module.exports = router;
